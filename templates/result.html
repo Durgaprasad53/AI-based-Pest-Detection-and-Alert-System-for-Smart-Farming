@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        img { width: 100%; max-width: 500px; margin: 10px 0; border-radius: 10px; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #28a745; color: white; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Detection Results</h2>
+        <img src="{{ image }}" alt="Detected Image">
+
+        <h3>Detected Pests</h3>
+        {% if detections %}
+        <table>
+            <tr>
+                <th>Pest Name</th>
+                <th>Confidence</th>
+                <th>Suggested Action</th>
+            </tr>
+            {% for pest in detections %}
+            <tr>
+                <td>{{ pest.name }}</td>
+                <td>{{ pest.confidence | round(2) }}</td>
+                <td>{{ pest.suggestion }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No pests detected.</p>
+        {% endif %}
+
+        <a href="{{ url_for('download', filename=image.split('/')[-1]) }}">
+            <button>Download Processed Image</button>
+        </a>
+        <br><br>
+        <a href="/"><button>Upload Another Image</button></a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pest Detection System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      margin: 15px 0;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button {
+      background: #2ecc71;
+      color: white;
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #27ae60;
+    }
+
+    #image-preview {
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    #results {
+      margin-top: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+      font-size: 14px;
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .spinner {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .alert {
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+
+    .alert.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .alert.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pest Detection System</h1>
+
+    <form id="upload-form" enctype="multipart/form-data">
+      <input type="file" id="image" accept="image/*" required />
+      <img id="image-preview" />
+      <br />
+      <button type="submit">Upload & Detect</button>
+    </form>
+
+    <div class="spinner" id="loading">🔄 Detecting pests...</div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const imageInput = document.getElementById("image");
+    const preview = document.getElementById("image-preview");
+    const loading = document.getElementById("loading");
+    const results = document.getElementById("results");
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+      } else {
+        preview.style.display = "none";
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const file = imageInput.files[0];
+      if (!file) {
+        alert("Please select an image.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      loading.style.display = "block";
+      results.innerHTML = "";
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.text())
+        .then((data) => {
+          loading.style.display = "none";
+          results.innerHTML = `<div class="alert success"><strong>Detection Result:</strong><br>${data}</div>`;
+        })
+        .catch((error) => {
+          loading.style.display = "none";
+          results.innerHTML = `<div class="alert error">Error detecting pests. Please try again.</div>`;
+          console.error("Error:", error);
+        });
+    });
+  </script>
+</body>
+</html>
