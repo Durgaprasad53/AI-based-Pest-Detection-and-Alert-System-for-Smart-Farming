@@ -18,10 +18,14 @@ This project uses AI to detect pests in crops using real-time image input from c
 
 ## How to Run
 1)Make sure you have Python installed.
+
 2)Navigate to the project directory in your terminal.
+
 3)Run the following command to start the Flask app:
   >>python pest_frontend.py
+
 4)Once the server starts, open your browser and go to:http://localhost:5000/
+
 5)Upload an image through the web interface. The system will detect pests and display the results.
 
 Note: This runs the app on your local machine.
